@@ -6,6 +6,8 @@
 #include <sstream>
 #include <boost/lexical_cast.hpp>
 #include "log.h"
+#include <yaml-cpp/yaml.h>
+#include <algorithm>
 
 namespace sylar{
 
@@ -15,6 +17,7 @@ public:
     ConfigVarBase(const std::string& name, const std::string& description="")
         :m_name(name)
         ,m_description(description){
+        std::transform(m_name.begin(), m_name.end(),m_name.begin(), ::tolower);
     }
     virtual ~ConfigVarBase(){}
 
@@ -99,6 +102,10 @@ public:
         }
         return std::dynamic_pointer_cast<ConfigVar<T> > (it->second);
     }
+
+    static void LoadFromYaml(const YAML::Node& root);
+
+    static ConfigVarBase::ptr LookupBase(const std::string& name);
 private:
     static ConfigVarMap s_datas;
 };

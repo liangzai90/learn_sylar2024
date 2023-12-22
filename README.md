@@ -40,6 +40,24 @@ tests   -- 测试代码
     |
     Appender（日志输出地方）
 
+
+## 配置系统
+  Config --> yaml
+  yamp-cpp: github 搜
+  mkdir build && cd build && cmake .. && make install 
+
+```txt
+Install the project...
+-- Install configuration: ""
+-- Installing: /usr/local/lib64/libyaml-cpp.a
+-- Up-to-date: /usr/local/include
+-- Installing: /usr/local/include/yaml-cpp
+-- Installing: /usr/local/include/yaml-cpp/anchor.h
+-- Installing: /usr/local/include/yaml-cpp/binary.h
+-- Installing: /usr/local/include/yaml-cpp/contrib
+
+```
+
 ## 协程库封装
 
 ## socket 函数库
