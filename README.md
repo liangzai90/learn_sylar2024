@@ -58,6 +58,47 @@ Install the project...
 
 ```
 
+```cpp
+yaml 文件的加载和解析
+
+YAML::Node node = YAML::LoadFile(filename);
+
+node.IsMap()
+for(auto it = node.begin(); it!= node.end(); ++it){
+    it->first, it->second
+}
+
+node.IsSequence()
+for(size_t i=0; i< node.size(); ++i){
+}
+
+node.IsScalar();
+```
+
+配置系统的原则，约定优于配置：
+
+```shell
+#同步系统时间
+sudo ntpdate -u asia.pool.ntp.org
+```
+
+```cpp
+template<T, FromStr, ToStr>
+class ConfigVar;
+
+template<F, T>
+LexicalCast;
+
+//容器偏特化 ，支持vector
+// list, set,  unordered_set, map, unordered_map,
+// map/unordered_map 支持 key = std::string
+// Config::Lookup(key) ，key相同，类型不同，不会有报错。需要处理
+```
+
+自定义类型，需要实现sylar::LexicalCast,偏特化
+实现后，就可以支持Config解析自定义类型.
+自定义类型可以和常规stl容器一起使用
+
 ## 协程库封装
 
 ## socket 函数库
