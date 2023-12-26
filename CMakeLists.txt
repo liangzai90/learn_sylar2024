@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.0)
 project(sylar2023)
 
+include (cmake/utils.cmake)
+
 set(CMAKE_VERBOSE_MAKEFILE ON)
 set(CMAKE_CXX_FLAGS "$ENV{CXXFLAGS} -rdynamic -O0 -ggdb -std=c++11 -Wall -Wno-deprecated -Werror -Wno-unused-function -Wno-builtin-macro-redefined -Wno-deprecated-declarations")
 
@@ -21,14 +23,17 @@ set(LIB_SRC
     )
     
 add_library(sylar2023 SHARED ${LIB_SRC})
-
+#重定义宏
+force_redefine_file_macro_for_sources(sylar2023)   # __FILE__
 add_executable(test tests/test.cpp)
 add_dependencies(test sylar2023)
+force_redefine_file_macro_for_sources(test)   # __FILE__
 # test工程依赖于sylar2023库 ，sylar2023库需要链接yaml-cpp库
 target_link_libraries(test sylar2023 ${YAMLCPP})
 
 add_executable(test_config tests/test_config.cpp)
 add_dependencies(test_config sylar2023)
+force_redefine_file_macro_for_sources(test_config)   # __FILE__
 #链接yaml-cpp库(yaml)
 target_link_libraries(test_config sylar2023 ${YAMLCPP})
 

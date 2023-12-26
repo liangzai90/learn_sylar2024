@@ -77,6 +77,15 @@ std::stringstream& LogEventWrap::getSS(){
     return m_event->getSS();
 }
 
+void LogAppender::setFormatter(LogFormatter::ptr val) { 
+    m_formatter = val; 
+    if(m_formatter) {
+        m_hasFormatter = true;
+    } else {
+        m_hasFormatter = false;
+    }
+}
+
 class MessageFormatItem : public LogFormatter::FormatItem{
 public:
     MessageFormatItem(const std::string& str = ""){}
@@ -222,6 +231,11 @@ Logger::Logger(const std::string& name)
 
 void Logger::setFormatter(LogFormatter::ptr val){
     m_formatter = val;
+    for(auto& i: m_appenders) {
+        if(!i->m_hasFormatter) {
+            i->m_formatter = m_formatter;
+        }
+    }
 }
 
 void Logger::setFormatter(const std::string& val){
@@ -232,7 +246,8 @@ void Logger::setFormatter(const std::string& val){
                 << std::endl;
         return;
     }
-    m_formatter = new_val;
+    //m_formatter = new_val;
+    setFormatter(new_val);
 }
 
 std::string Logger::toYamlString(){
@@ -258,9 +273,9 @@ LogFormatter::ptr Logger::getFormatter(){
 }
 
 void Logger::addAppender(LogAppender::ptr appender){
-     if(!appender->getFormatter()){
-         appender->setFormatter(m_formatter);
-     }
+    if(!appender->getFormatter()){
+        appender->m_formatter = m_formatter;
+    }
     m_appenders.push_back(appender);
 }
 
@@ -332,7 +347,7 @@ std::string FileLogAppender::toYamlString(){
     if(m_level != LogLevel::UNKNOW){
         node["level"] = LogLevel::ToString(m_level);
     }
-    if(m_formatter) {
+    if(m_hasFormatter && m_formatter) {
         node["formatter"] = m_formatter->getPattern();
     }
     std::stringstream ss;
@@ -363,7 +378,7 @@ std::string StdoutLogAppender::toYamlString(){
     if(m_level != LogLevel::UNKNOW){
         node["level"] = LogLevel::ToString(m_level);
     }
-    if(m_formatter) {
+    if(m_hasFormatter && m_formatter) {
         node["formatter"] = m_formatter->getPattern();
     }
     std::stringstream ss;
@@ -569,7 +584,7 @@ public:
                 ld.formatter = n["formatter"].as<std::string>();
             }
             if(n["appenders"].IsDefined()){
-                std::cout<<"==="<<ld.name<<" = "<< n["appenderrs"].size()<<std::endl;
+                //std::cout<<"==="<<ld.name<<" = "<< n["appenderrs"].size()<<std::endl;
                 for(size_t x=0; x<n["appenders"].size();++x){
                     auto a = n["appenders"][x];
                     if(!a["type"].IsDefined()){
@@ -598,7 +613,7 @@ public:
                     ld.appenders.push_back(lad);
                 }
             }
-            std::cout << " --- " << ld.name<<" - " << ld.appenders.size()<< std::endl;
+            //std::cout << " --- " << ld.name<<" - " << ld.appenders.size()<< std::endl;
             vec.insert(ld);
         }
         return vec;
@@ -680,6 +695,15 @@ struct LogIniter{
                         ap.reset(new StdoutLogAppender);
                     }
                     ap->setLevel(a.level);
+                    if(!a.formatter.empty()) {
+                        LogFormatter::ptr fmt(new LogFormatter(a.formatter));
+                        if(!fmt->isError()) {
+                            ap->setFormatter(fmt);
+                        } else {
+                            std::cout <<"log.name="<< i.name << " appender type="<<a.type
+                                      <<" formatter="<<a.formatter <<" is invalid."<<std::endl;
+                        }
+                    }
                     logger->addAppender(ap);
                 }
             }
