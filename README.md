@@ -99,6 +99,46 @@ LexicalCast;
 实现后，就可以支持Config解析自定义类型.
 自定义类型可以和常规stl容器一起使用
 
+
+配置的事件机制
+当一个配置项发生修改的时候，可以反向通知对应的代码，回调
+
+## 日志系统整合配置系统
+```yml
+logs:
+  - name: root
+    level: (debug, info, warn, error,fatal)
+    formatter: "%d%T%P%T%t%m%n"
+    appender:
+      - type: (StdoutLogAppender, FileLogAppender)
+        level: (debug, info,...)
+        file: /logs/xxx.log
+```
+
+```cpp
+    sylar::Logger  g_logger = sylar::LoggerMgr::GetInstance()->getLogger(name);
+    SYLAR_LOG_INFO(g_logger) << "xxxx  log";
+```
+
+```cpp
+static Logger::ptr g_log = SYLAR_LOG_NAME("system");
+// m_root, m_system->m_root
+当logger 的appender为空，使用root写logger
+```
+
+```cpp
+//定义LogDefine LogAppenderDefine 偏特化 LexicalCast,
+// 实现日志配置解析
+```
+
+```cpp
+
+```
+遗留问题：
+1. appender 定义的 formatter 读取yaml 的时候，没有被初始化
+2. 去掉额外的调试日志
+
+
 ## 协程库封装
 
 ## socket 函数库
