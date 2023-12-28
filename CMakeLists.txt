@@ -20,22 +20,35 @@ set(LIB_SRC
     sylar2023/log.cpp
     sylar2023/util.cpp
     sylar2023/config.cpp
+    sylar2023/thread.cpp
     )
     
 add_library(sylar2023 SHARED ${LIB_SRC})
+
+set(LIB_LIB
+    sylar2023
+    pthread
+    ${YAMLCPP}
+    )
+
 #重定义宏
 force_redefine_file_macro_for_sources(sylar2023)   # __FILE__
 add_executable(test tests/test.cpp)
 add_dependencies(test sylar2023)
 force_redefine_file_macro_for_sources(test)   # __FILE__
 # test工程依赖于sylar2023库 ，sylar2023库需要链接yaml-cpp库
-target_link_libraries(test sylar2023 ${YAMLCPP})
+target_link_libraries(test ${LIB_LIB})
 
 add_executable(test_config tests/test_config.cpp)
-add_dependencies(test_config sylar2023)
+add_dependencies(test_config  sylar2023)
 force_redefine_file_macro_for_sources(test_config)   # __FILE__
 #链接yaml-cpp库(yaml)
-target_link_libraries(test_config sylar2023 ${YAMLCPP})
+target_link_libraries(test_config  ${LIB_LIB})
+
+add_executable(test_thread tests/test_thread.cpp)
+add_dependencies(test_thread  sylar2023)
+force_redefine_file_macro_for_sources(test_thread)
+target_link_libraries(test_thread  ${LIB_LIB})
 
 
 
