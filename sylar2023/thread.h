@@ -63,7 +63,6 @@ private:
     bool m_locked;    
 };
 
-
 template<class T>
 class ReadScopedLockImp {
 public:
@@ -129,12 +128,45 @@ private:
     bool m_locked;    
 };
 
+class Mutex {
+public:
+    typedef ScopedLockImp<Mutex> Lock;
+    Mutex() {
+        pthread_mutex_init(&m_mutex, nullptr);
+    }  
+    ~Mutex() {
+        pthread_mutex_destroy(&m_mutex);
+    }
+
+    void lock() {
+        pthread_mutex_lock(&m_mutex);
+    }
+
+    void unlock() {
+        pthread_mutex_unlock(&m_mutex);
+    }
+private:
+    pthread_mutex_t m_mutex;
+};
+
+class NullMutex {
+public:
+    typedef ScopedLockImp<Mutex> Lock;
+    NullMutex() {}  
+    ~NullMutex() {}
+    void lock() {}
+    void unlock() {}
+private:
+    pthread_mutex_t m_mutex;
+};
 
 
 class RWMutex {
 public:
-    typedef ReadScopedLockImp<RWMutex> ReadLock;
-    typedef WriteScopedLockImp<RWMutex> WriteLock;
+//在这个特定的代码中，不会发生模板循环。
+//原因是这两个别名的定义是在 RWMutex 类的内部进行的，而不是在模板实例化的过程中。
+    typedef ReadScopedLockImp<RWMutex> ReadLock;  // readLock 模板别名
+    typedef WriteScopedLockImp<RWMutex> WriteLock; // writeLock 模板别名
 
     RWMutex() {
         pthread_rwlock_init(&m_lock, nullptr);
@@ -157,6 +189,22 @@ public:
 private:
     pthread_rwlock_t m_lock;
 };
+
+//定义NullRWMutex 是为了以后测试 锁的功能的
+class NullRWMutex {
+public:
+    typedef ReadScopedLockImp<NullRWMutex> ReadLock; 
+    typedef WriteScopedLockImp<NullRWMutex> WriteLock; 
+
+    NullRWMutex() {}
+    ~NullRWMutex() {}
+    void rdlock() {}
+    void wrlock() {}
+    void unlock() {}
+private:
+     pthread_rwlock_t m_lock;
+};
+
 
 class Thread {
 public:

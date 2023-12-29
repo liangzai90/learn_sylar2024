@@ -13,6 +13,7 @@
 #include <set>
 #include "singleton.h"
 #include "util.h"
+#include "thread.h"
 
 #define SYLAR_LOG_LEVEL(logger, level) \
     if(logger->getLevel() <= level) \
@@ -145,13 +146,14 @@ public:
     virtual std::string toYamlString() =0 ;
 
     void setFormatter(LogFormatter::ptr val);
-    LogFormatter::ptr getFormatter() const {return m_formatter;}
+    LogFormatter::ptr getFormatter(); //const {return m_formatter;}
     LogLevel::Level getLevel()const {return m_level;}
     void setLevel(LogLevel::Level val) {m_level = val;}
 
 protected:
     LogLevel::Level m_level = LogLevel::DEBUG;
     bool m_hasFormatter = false;
+    sylar::Mutex m_mutex;
     LogFormatter::ptr m_formatter;
 };
 
@@ -185,6 +187,7 @@ public:
 private:
     std::string m_name;                         //日志名称
     LogLevel::Level m_level = LogLevel::DEBUG;  //日志级别 
+    sylar::Mutex m_mutex;
     std::list<LogAppender::ptr> m_appenders;    //Appender集合
     LogFormatter::ptr m_formatter;
     Logger::ptr m_root;
@@ -222,6 +225,7 @@ public:
     Logger::ptr getRoot() const {return m_root;}
     std::string toYamlString();
 private:
+    sylar::Mutex m_mutex;
     std::map<std::string, Logger::ptr> m_loggers;
     Logger::ptr  m_root;
 };
