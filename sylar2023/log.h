@@ -215,17 +215,20 @@ public:
 private:
     std::string m_filename;
     std::ofstream m_filestream;
+    uint64_t m_lastTime = 0;
 };
 
 class LoggerManager{
 public:
+    //typedef Spinlock MutexType; //定义自旋锁
     LoggerManager();
     Logger::ptr getLogger(const std::string& name);
     void init();
     Logger::ptr getRoot() const {return m_root;}
     std::string toYamlString();
 private:
-    sylar::Mutex m_mutex;
+    sylar::Mutex m_mutex; //互斥锁
+    //MutexType m_mutex; //自旋锁
     std::map<std::string, Logger::ptr> m_loggers;
     Logger::ptr  m_root;
 };

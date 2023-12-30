@@ -350,6 +350,12 @@ void FileLogAppender::log(std::shared_ptr<Logger> logger, LogLevel::Level level,
 {
     if(level >= m_level)
     {
+        uint64_t now = time(0);
+        if(now != m_lastTime) {
+            reopen();
+            m_lastTime = now;
+        }
+
         Mutex::Lock lock(m_mutex);
         m_filestream<<m_formatter->format(logger, level, event);
     }
@@ -744,7 +750,8 @@ struct LogIniter{
 static LogIniter  __log_init;
 
 std::string LoggerManager::toYamlString(){
-    Mutex::Lock lock(m_mutex); 
+    Mutex::Lock lock(m_mutex);  //互斥锁枷锁
+    //MutexType::Lock lock(m_mutex); //自旋锁枷锁
     YAML::Node node;
     for(auto& i : m_loggers){
         node.push_back(YAML::Load(i.second->toYamlString()));

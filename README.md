@@ -15,8 +15,8 @@ mkdir build && cd build && cmake ../ && make
 ## sylar 
 
 ## 开发环境
-CentOs7
-gcc 9.1
+CentOs7,
+gcc 9.1,
 cmake 
 
 ## 项目路径
