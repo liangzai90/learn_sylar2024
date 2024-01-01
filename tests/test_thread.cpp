@@ -33,11 +33,24 @@ void fun3() {
     }
 }
 
+void test_exception() {
+    throw std::logic_error("this is a test exception error 20240101 v1");
+    // try{
+    //     throw std::logic_error("this is a test exception error20240101 v2");
+    // } catch(std::exception& ex) {
+    //     std::cout<<"----test---  what:"<< ex.what()<<std::endl;
+    // }
+}
+
+//! 特别注意：
+//! YAML::LoadFile("")这里传入的参数，是日志文件的绝对路径。
+//! 如果路径错误了，程序会抛出异常并终止执行。
+
 int main(int argc, char** argv) {
     SYLAR_LOG_INFO(g_logger) << "thread test begin";
-    //YAML::Node root = YAML::LoadFile("/home/sylar/test/sylar/bin/conf/log2.yml");
-    //sylar::Config::LoadFromYaml(root);
-
+    YAML::Node root = YAML::LoadFile("/home/henry/workspace/henry-sylar/bin/conf/log2.yml");
+    sylar::Config::LoadFromYaml(root);
+    //test_exception(); // 我自己写的测试异常的函数
     std::vector<sylar::Thread::ptr> thrs;
     for(int i=0;i<5; i++) {
         //sylar::Thread::ptr thr(new sylar::Thread(&fun1, "name_" + std::to_string(i)));
@@ -50,7 +63,9 @@ int main(int argc, char** argv) {
     for(size_t i=0;i < thrs.size(); ++i) {
         thrs[i]->join();
     }
+
     SYLAR_LOG_INFO(g_logger) << "thread test end";
     SYLAR_LOG_INFO(g_logger) << "count="<<count;
+
     return 0;
 }

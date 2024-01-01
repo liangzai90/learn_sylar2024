@@ -56,7 +56,7 @@ void print_yaml(const YAML::Node& node, int level){
 }
 
 void test_yaml(){
-    YAML::Node root = YAML::LoadFile("/home/henry/workspace/bin/conf/test.yml");
+    YAML::Node root = YAML::LoadFile("/home/henry/workspace/henry-sylar/bin/conf/test.yml");
     print_yaml(root, 0);
     //SYLAR_LOG_INFO(SYLAR_LOG_ROOT()) << root;
 }
@@ -91,7 +91,7 @@ void test_config(){
     XX_M(g_int_map_value_config, int_map, before);
     XX_M(g_int_umap_value_config, int_umap, before);
 
-    YAML::Node root = YAML::LoadFile("/home/henry/workspace/bin/conf/test.yml");
+    YAML::Node root = YAML::LoadFile("/home/henry/workspace/henry-sylar/bin/conf/test.yml");
     sylar::Config::LoadFromYaml(root);
 
     SYLAR_LOG_INFO(SYLAR_LOG_ROOT())<< "after: "<< g_int_value_config->getValue();
@@ -179,7 +179,7 @@ void test_class(){
         SYLAR_LOG_INFO(SYLAR_LOG_ROOT())<< prefix <<": size="<<m.size(); \
     }
 
-    g_person->addListener(10, [](const Person& old_value, const Person& new_value){
+    g_person->addListener([](const Person& old_value, const Person& new_value){
         SYLAR_LOG_INFO(SYLAR_LOG_ROOT()) << "old_value="<<old_value.toString()
             << " new_value="<<new_value.toString();
     });
@@ -187,7 +187,7 @@ void test_class(){
     XX_PM(g_person_map, "class.map before");
     SYLAR_LOG_INFO(SYLAR_LOG_ROOT()) << "before: "<< g_person_vec_map->toString();
 
-    YAML::Node root = YAML::LoadFile("/home/henry/workspace/bin/conf/test.yml");
+    YAML::Node root = YAML::LoadFile("/home/henry/workspace/henry-sylar/bin/conf/test.yml");
     sylar::Config::LoadFromYaml(root);
 
     SYLAR_LOG_INFO(SYLAR_LOG_ROOT()) <<"after: "<< g_person->getValue().toString() <<" - "<<g_person->toString();
@@ -200,7 +200,8 @@ void test_log(){
     static sylar::Logger::ptr system_log = SYLAR_LOG_NAME("system");
     SYLAR_LOG_INFO(system_log)<< "hello system log."<<std::endl;
     std::cout<< sylar::LoggerMgr::GetInstance()->toYamlString() << std::endl;
-    YAML::Node root = YAML::LoadFile("/home/henry/workspace/bin/conf/test.yml");
+                                   ///home/henry/workspace/henry-sylar/bin/conf
+    YAML::Node root = YAML::LoadFile("/home/henry/workspace/henry-sylar/bin/conf/test.yml");
     sylar::Config::LoadFromYaml(root);
     std::cout<<"======================"<<std::endl;
     std::cout<< sylar::LoggerMgr::GetInstance()->toYamlString() << std::endl;
@@ -217,5 +218,13 @@ int main(){
     //test_config();
     //test_class();
     test_log();
+
+    sylar::Config::Visit([](sylar::ConfigVarBase::ptr var) {
+        SYLAR_LOG_INFO(SYLAR_LOG_ROOT()) <<"name="<<var->getName()
+                    << " description=" << var->getDescription()
+                    << " typename="<<var->getTypeName() 
+                    << " value="<< var->toString();
+    });
+
     return 0;
 }
