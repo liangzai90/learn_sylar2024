@@ -15,9 +15,21 @@ mkdir build && cd build && cmake ../ && make
 ## sylar 
 
 ## 开发环境
-CentOs7,
-gcc 9.1,
-cmake 
+
+软件 | 软件要求
+--------|-----------
+linux内核版本:     |	2.6.18及以上版本
+系统  | CentOs7 
+gcc版本 | 9.1及以上
+cmake版本 |  3.0及以上
+yaml-cpp版本 | 0.6.0及以上
+boost版本 | 1.5.3及以上
+
+### sylar框架的环境准备
+https://www.cnblogs.com/music-liang/p/17940148
+
+
+
 
 ## 项目路径
 bin     -- 二进制
@@ -137,8 +149,37 @@ static Logger::ptr g_log = SYLAR_LOG_NAME("system");
 遗留问题：
 1. appender 定义的 formatter 读取yaml 的时候，没有被初始化
 2. 去掉额外的调试日志
+3. 文件名问题
+
+## 线程库
+Thread, Mutex
+Pthread 
+
+pthread  pthread_create
+
+互斥量  mutex
+信号量  semaphore
+
+和log来整合
+
+Spinlock,  替换Mutex，提高性能
+
+写文件，周期性， reopen（解决删除旧文件之后，新写入的数据丢失问题（因为好不到文件名了））
 
 
+遗留问题：
+```txt
+test_config里面，重新加载配置文件的时候，终端报错了
+    YAML::Node root = YAML::LoadFile("/home/henry/workspace/bin/conf/test.yml");
+    sylar::Config::LoadFromYaml(root);
+```    
+    
+
+```shell
+##直接在centos下面，通过man手册，查看C语言下面函数的定义
+man assert
+```
+    
 ## 协程库封装
 
 ## socket 函数库
@@ -150,7 +191,18 @@ static Logger::ptr g_log = SYLAR_LOG_NAME("system");
 ## 推荐系统
 
 
+```cpp
+cpp里面不熟悉的若干关键字
 
+volatile
+
+explicit
+
+constexpr
+
+
+
+```
 
 
 
