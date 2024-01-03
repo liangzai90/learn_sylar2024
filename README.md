@@ -174,10 +174,12 @@ test_config里面，重新加载配置文件的时候，终端报错了
     sylar::Config::LoadFromYaml(root);
 ```    
     
+直接在centos下面，通过man手册，查看C语言下面函数的定义
 
 ```shell
-##直接在centos下面，通过man手册，查看C语言下面函数的定义
 man assert
+
+man  pthread_create
 ```
     
 ## 协程库封装
