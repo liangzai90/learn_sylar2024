@@ -7,5 +7,6 @@
 #include "singleton.h"
 #include "util.h"
 #include "thread.h"
+#include "fiber.h"
 
 #endif

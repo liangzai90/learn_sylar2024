@@ -166,32 +166,55 @@ Spinlock,  替换Mutex，提高性能
 
 写文件，周期性， reopen（解决删除旧文件之后，新写入的数据丢失问题（因为好不到文件名了））
 
+Config, RMutex
+
 
 遗留问题：
 ```txt
 test_config里面，重新加载配置文件的时候，终端报错了
     YAML::Node root = YAML::LoadFile("/home/henry/workspace/bin/conf/test.yml");
     sylar::Config::LoadFromYaml(root);
+
+因为这里的路径错误了。（我本地.yml文件路径有调整，这里LoadFile的时候，找不到文件，然后就抛出了异常。报错的地方是一个异常。当时没有在第一时间识别这是一个异常。
 ```    
+
     
+## 协程库封装
+定义协程接口
+ucontext_t
+macro
+
+```
+Thread->main_fiber <-------> sub_fiber
+            ^
+            |
+            v
+          sbu_fiber
+```
+
+
+## socket 函数库
+
+
+## http协议开发
+
+
+## 分布协议
+
+
+## 推荐系统
+
+
+
+## 其他    
 直接在centos下面，通过man手册，查看C语言下面函数的定义
 
 ```shell
 man assert
 
 man  pthread_create
+man makecontext
 ```
-    
-## 协程库封装
-
-## socket 函数库
-
-## http协议开发
-
-## 分布协议
-
-## 推荐系统
-
 
 ```cpp
 cpp里面不熟悉的若干关键字

@@ -1,5 +1,6 @@
 #include "util.h"
 #include <execinfo.h>
+#include "fiber.h"
 #include <iostream>
 #include "log.h"
 
@@ -12,7 +13,7 @@ pid_t GetThreadId(){
 }
 
 uint32_t GetFiberId(){
-    return 0;
+    return sylar::Fiber::GetFiberId();
 }
 
 // 这里是用的协程，资源利用要到极致

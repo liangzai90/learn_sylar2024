@@ -14,10 +14,11 @@ include_directories(/usr/local/include)
 link_directories(/usr/local/lib64)
 
 find_library(YAMLCPP yaml-cpp)
-message("***", ${YAMLCPP})
+message("****  ${YAMLCPP}")
 
 set(LIB_SRC
     sylar2023/log.cpp
+    sylar2023/fiber.cpp
     sylar2023/util.cpp
     sylar2023/config.cpp
     sylar2023/thread.cpp
@@ -54,6 +55,11 @@ add_executable(test_util tests/test_util.cpp)
 add_dependencies(test_util  sylar2023)
 force_redefine_file_macro_for_sources(test_util)
 target_link_libraries(test_util  ${LIB_LIB})
+
+add_executable(test_fiber tests/test_fiber.cpp)
+add_dependencies(test_fiber  sylar2023)
+force_redefine_file_macro_for_sources(test_fiber)
+target_link_libraries(test_fiber  ${LIB_LIB})
 
 
 
