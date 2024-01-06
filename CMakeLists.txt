@@ -62,6 +62,11 @@ add_dependencies(test_fiber  sylar2023)
 force_redefine_file_macro_for_sources(test_fiber)
 target_link_libraries(test_fiber  ${LIB_LIB})
 
+add_executable(test_scheduler tests/test_scheduler.cpp)
+add_dependencies(test_scheduler  sylar2023)
+force_redefine_file_macro_for_sources(test_scheduler)
+target_link_libraries(test_scheduler  ${LIB_LIB})
+
 
 
 SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
