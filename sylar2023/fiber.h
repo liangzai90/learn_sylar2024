@@ -4,7 +4,6 @@
 #include <memory>
 #include <functional>
 #include <ucontext.h>
-#include "thread.h"
 
 
 namespace sylar {
@@ -27,7 +26,17 @@ private:
     Fiber();
 
 public:
-    Fiber(std::function<void()> cb, size_t stacksize = 0);
+    /**
+     * @brief 构造函数
+     * @param[in] cb 协程执行的函数
+     * @param[in] stacksize 协程栈大小
+     * @param[in] use_caller 是否在MainFiber上调度
+     */
+    Fiber(std::function<void()> cb, size_t stacksize = 0, bool use_caller = false);
+
+    /**
+     * @brief 析构函数
+     */
     ~Fiber();
 
     //重置协程函数，并重置状态 INIT, TERM
@@ -36,8 +45,25 @@ public:
     void swapIn();
     //切换到后台执行
     void swapOut();
-    uint64_t getId() const {return m_id;}
-    Fiber::State getState() const {return m_state;}
+
+    void call();
+
+    /**
+     * @brief 将当前线程切换到后台
+     * @pre 执行的为该协程
+     * @post 返回到线程的主协程
+     */
+    void back();
+
+    /**
+     * @brief 返回协程id
+     */
+    uint64_t getId() const { return m_id;}
+
+    /**
+     * @brief 返回协程状态
+     */
+    State getState() const { return m_state;}
 public:
     //设置当前协程
     static void SetThis(Fiber* f);
@@ -51,6 +77,16 @@ public:
     static uint64_t TotalFibers();
 
     static void MainFunc();
+
+    /**
+     * @brief 协程执行函数
+     * @post 执行完成返回到线程调度协程
+     */
+    static void CallerMainFunc();
+
+    /**
+     * @brief 获取当前协程的id
+     */
     static uint64_t GetFiberId();
 private:
     uint64_t m_id = 0;
