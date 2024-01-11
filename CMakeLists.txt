@@ -21,6 +21,7 @@ set(LIB_SRC
     sylar2023/fiber.cpp
     sylar2023/util.cpp
     sylar2023/scheduler.cpp
+    sylar2023/iomanager.cpp
     sylar2023/config.cpp
     sylar2023/thread.cpp
     )
@@ -67,8 +68,12 @@ add_dependencies(test_scheduler  sylar2023)
 force_redefine_file_macro_for_sources(test_scheduler)
 target_link_libraries(test_scheduler  ${LIB_LIB})
 
+add_executable(test_iomanager tests/test_iomanager.cpp)
+add_dependencies(test_iomanager  sylar2023)
+force_redefine_file_macro_for_sources(test_iomanager)
+target_link_libraries(test_iomanager  ${LIB_LIB})
+
 
 
 SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 SET(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
-
