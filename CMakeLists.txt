@@ -22,6 +22,7 @@ set(LIB_SRC
     sylar2023/util.cpp
     sylar2023/scheduler.cpp
     sylar2023/iomanager.cpp
+    sylar2023/timer.cpp
     sylar2023/config.cpp
     sylar2023/thread.cpp
     )

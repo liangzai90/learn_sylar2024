@@ -312,20 +312,18 @@ void IOManager::tickle() {
     SYLAR_ASSERT(rt == 1);
 }
 
+
 bool IOManager::stopping(uint64_t& timeout) {
-    //timeout = getNextTimer();
-    return timeout == ~0ull //0ull 表示无符号长整型常量0。unsigned long long
+    timeout = getNextTimer();
+    //0ull 表示无符号长整型常量0。unsigned long long
+    return timeout == ~0ull
         && m_pendingEventCount == 0
         && Scheduler::stopping();
-
 }
 
 bool IOManager::stopping() {
-    // uint64_t timeout = 0;
-    // return stopping(timeout);
-
-    return Scheduler::stopping() 
-        && m_pendingEventCount==0;
+    uint64_t timeout = 0;
+    return stopping(timeout);
 }
 
 void IOManager::idle() {
@@ -361,7 +359,17 @@ void IOManager::idle() {
             }
         } while(true);
 
-        /// some time funcs
+        std::vector<std::function<void()> > cbs;
+        listExpiredCb(cbs);
+        if(!cbs.empty()) {
+            //SYLAR_LOG_DEBUG(g_logger) << "on timer cbs.size=" << cbs.size();
+            schedule(cbs.begin(), cbs.end());
+            cbs.clear();
+        }
+
+        //if(SYLAR_UNLIKELY(rt == MAX_EVNETS)) {
+        //    SYLAR_LOG_INFO(g_logger) << "epoll wait events=" << rt;
+        //}
 
         for(int i=0;i<rt; ++i) {
             epoll_event& event = events[i];
@@ -421,6 +429,8 @@ void IOManager::idle() {
     }
 }
 
-
+void IOManager::onTimerInsertedAtFront() {
+    tickle();
+}  
 
 }

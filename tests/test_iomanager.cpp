@@ -49,8 +49,28 @@ void test1() {
     iom.schedule(&test_fiber);
 }
 
-int main(int argc, char** argv) {
-    test1();
+void test_timer() {
+    sylar::IOManager iom(2);
+    iom.addTimer(500,[](){
+        SYLAR_LOG_INFO(g_logger)<<" hello timer ";
+    }, true);
+}
 
+sylar::Timer::ptr s_timer;
+void test_timer2() {
+    sylar::IOManager iom(2);
+    s_timer = iom.addTimer(1000,[](){
+        static int i=0;
+        SYLAR_LOG_INFO(g_logger)<<" hello timer i="<<i;
+        if(++i == 5) {
+            s_timer->cancel();
+        }
+    }, true);
+}
+
+int main(int argc, char** argv) {
+    //test1();
+    //test_timer();
+    test_timer2();
     return 0;
 }
