@@ -19,6 +19,7 @@ message("****  ${YAMLCPP}")
 set(LIB_SRC
     sylar2023/log.cpp
     sylar2023/fiber.cpp
+    sylar2023/hook.cpp
     sylar2023/util.cpp
     sylar2023/scheduler.cpp
     sylar2023/iomanager.cpp
@@ -30,6 +31,7 @@ set(LIB_SRC
 add_library(sylar2023 SHARED ${LIB_SRC})
 
 set(LIB_LIB
+    dl
     sylar2023
     pthread
     ${YAMLCPP}
@@ -73,6 +75,11 @@ add_executable(test_iomanager tests/test_iomanager.cpp)
 add_dependencies(test_iomanager  sylar2023)
 force_redefine_file_macro_for_sources(test_iomanager)
 target_link_libraries(test_iomanager  ${LIB_LIB})
+
+add_executable(test_hook tests/test_hook.cpp)
+add_dependencies(test_hook  sylar2023)
+force_redefine_file_macro_for_sources(test_hook)
+target_link_libraries(test_hook  ${LIB_LIB})
 
 
 
