@@ -19,6 +19,7 @@ message("****  ${YAMLCPP}")
 set(LIB_SRC
     sylar2023/log.cpp
     sylar2023/fiber.cpp
+    sylar2023/fd_manager.cpp
     sylar2023/hook.cpp
     sylar2023/util.cpp
     sylar2023/scheduler.cpp
