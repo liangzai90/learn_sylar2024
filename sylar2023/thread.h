@@ -8,10 +8,11 @@
 #include <semaphore.h>
 #include <stdint.h>
 #include <atomic>
+#include "noncopyable.h"
 
 namespace sylar{
 
-class Semaphore {
+class Semaphore : public Noncopyable{
 public:
     Semaphore(uint32_t count = 0); 
     ~Semaphore();
@@ -129,7 +130,7 @@ private:
     bool m_locked;    
 };
 
-class Mutex {
+class Mutex  : public Noncopyable{
 public:
     typedef ScopedLockImp<Mutex> Lock;
     Mutex() {
@@ -150,7 +151,7 @@ private:
     pthread_mutex_t m_mutex;
 };
 
-class NullMutex {
+class NullMutex  : public Noncopyable{
 public:
     typedef ScopedLockImp<Mutex> Lock;
     NullMutex() {}  
@@ -162,7 +163,7 @@ private:
 };
 
 
-class RWMutex {
+class RWMutex  : public Noncopyable{
 public:
 //在这个特定的代码中，不会发生模板循环。
 //原因是这两个别名的定义是在 RWMutex 类的内部进行的，而不是在模板实例化的过程中。
@@ -192,7 +193,7 @@ private:
 };
 
 //定义NullRWMutex 是为了以后测试 锁的功能的
-class NullRWMutex {
+class NullRWMutex  : public Noncopyable{
 public:
     typedef ReadScopedLockImp<NullRWMutex> ReadLock; 
     typedef WriteScopedLockImp<NullRWMutex> WriteLock; 
@@ -206,7 +207,7 @@ private:
      pthread_rwlock_t m_lock;
 };
 
-class Spinlock {
+class Spinlock  : public Noncopyable{
 public:
     typedef ScopedLockImp<Spinlock> Lock;
     Spinlock() {
@@ -225,7 +226,7 @@ private:
     pthread_spinlock_t m_mutex;
 };
 
-class CASLock {
+class CASLock  : public Noncopyable {
 public:
     typedef ScopedLockImp<CASLock> Lock;
     CASLock() {
@@ -243,7 +244,7 @@ private:
     volatile std::atomic_flag m_mutex;    
 };
 
-class Thread {
+class Thread : public Noncopyable {
 public:
     typedef std::shared_ptr<Thread> ptr;
     Thread(std::function<void()> cb, const std::string& name);
