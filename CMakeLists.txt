@@ -27,6 +27,7 @@ set(LIB_SRC
     sylar2023/timer.cpp
     sylar2023/config.cpp
     sylar2023/thread.cpp
+    sylar2023/address.cpp
     )
     
 add_library(sylar2023 SHARED ${LIB_SRC})
@@ -81,6 +82,11 @@ add_executable(test_hook tests/test_hook.cpp)
 add_dependencies(test_hook  sylar2023)
 force_redefine_file_macro_for_sources(test_hook)
 target_link_libraries(test_hook  ${LIB_LIB})
+
+add_executable(test_address tests/test_address.cpp)
+add_dependencies(test_address  sylar2023)
+force_redefine_file_macro_for_sources(test_address)
+target_link_libraries(test_address  ${LIB_LIB})
 
 
 
