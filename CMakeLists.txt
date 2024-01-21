@@ -28,6 +28,7 @@ set(LIB_SRC
     sylar2023/config.cpp
     sylar2023/thread.cpp
     sylar2023/address.cpp
+    sylar2023/bytearray.cpp
     )
     
 add_library(sylar2023 SHARED ${LIB_SRC})
@@ -87,6 +88,11 @@ add_executable(test_address tests/test_address.cpp)
 add_dependencies(test_address  sylar2023)
 force_redefine_file_macro_for_sources(test_address)
 target_link_libraries(test_address  ${LIB_LIB})
+
+add_executable(test_bytearray tests/test_bytearray.cpp)
+add_dependencies(test_bytearray  sylar2023)
+force_redefine_file_macro_for_sources(test_bytearray)
+target_link_libraries(test_bytearray  ${LIB_LIB})
 
 
 
