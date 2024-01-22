@@ -24,10 +24,13 @@ gcc版本 | 9.1及以上
 cmake版本 |  3.0及以上
 yaml-cpp版本 | 0.6.0及以上
 boost版本 | 1.5.3及以上
+openssl   | 
+
 
 ### sylar框架的环境准备
-https://www.cnblogs.com/music-liang/p/17940148
+关于开发环境的问题，都可以看这篇文章。
 
+https://www.cnblogs.com/music-liang/p/17940148
 
 
 

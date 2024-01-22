@@ -8,13 +8,33 @@ set(CMAKE_CXX_FLAGS "$ENV{CXXFLAGS} -rdynamic -O0 -ggdb -std=c++11 -Wall -Wno-de
 
 
 include_directories(.)
+
+# 头文件
+include_directories(/usr/include)
+
 #添加(yaml)头文件目录
 include_directories(/usr/local/include)
 #添加(yaml)链接库目录
 link_directories(/usr/local/lib64)
 
 find_library(YAMLCPP yaml-cpp)
-message("****  ${YAMLCPP}")
+message("**** YAMLCPP: ${YAMLCPP}")
+
+# 查找 OpenSSL 库
+find_package(OpenSSL REQUIRED)
+
+# 添加 OpenSSL 头文件目录
+include_directories(${OPENSSL_INCLUDE_DIR})
+
+message("**** OPENSSL_INCLUDE_DIR: ${OPENSSL_INCLUDE_DIR}")
+
+# **** YAMLCPP: /usr/local/lib64/libyaml-cpp.a
+# -- Found OpenSSL: /usr/lib64/libcrypto.so (found version "1.0.2k")  
+# **** OPENSSL_INCLUDE_DIR: /usr/include
+
+# 链接 OpenSSL 库
+# target_link_libraries(sylar2023 ${OPENSSL_LIBRARIES})
+
 
 set(LIB_SRC
     sylar2023/log.cpp
@@ -29,6 +49,7 @@ set(LIB_SRC
     sylar2023/thread.cpp
     sylar2023/address.cpp
     sylar2023/bytearray.cpp
+    sylar2023/socket.cpp
     )
     
 add_library(sylar2023 SHARED ${LIB_SRC})
@@ -38,6 +59,7 @@ set(LIB_LIB
     sylar2023
     pthread
     ${YAMLCPP}
+    ${OPENSSL_LIBRARIES}
     )
 
 #重定义宏
@@ -93,6 +115,11 @@ add_executable(test_bytearray tests/test_bytearray.cpp)
 add_dependencies(test_bytearray  sylar2023)
 force_redefine_file_macro_for_sources(test_bytearray)
 target_link_libraries(test_bytearray  ${LIB_LIB})
+
+add_executable(test_socket tests/test_socket.cpp)
+add_dependencies(test_socket  sylar2023)
+force_redefine_file_macro_for_sources(test_socket)
+target_link_libraries(test_socket  ${LIB_LIB})
 
 
 
